@@ -1,0 +1,17 @@
+{
+  "projects": [
+    {
+      "name": "pihkaal",
+      "files": [
+        "README.md",
+        "pubkey.asc"
+      ]
+    },
+    {
+      "name": "tlock",
+      "files": [
+        "README.md"
+      ]
+    }
+  ]
+}
