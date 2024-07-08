@@ -1,4 +1,22 @@
 {
   "files": ["README.md", "pubkey.asc"],
-  "projects": ["me", "tlock"]
+  "projects": ["me", "tlock"],
+  "links": [
+    {
+      "name": "github",
+      "url": "https://github.com/pihkaal",
+      "icon": {
+        "char": "󰊤 ",
+        "color": "#ffffff"
+      }
+    },
+    {
+      "name": "instagram",
+      "url": "https://instagram.com/pihkaal",
+      "icon": {
+        "char": " ",
+        "color": "#e1306c"
+      }
+    }
+  ]
 }
