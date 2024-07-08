@@ -5,18 +5,12 @@
     {
       "name": "github",
       "url": "https://github.com/pihkaal",
-      "icon": {
-        "char": "󰊤 ",
-        "color": "#ffffff"
-      }
+      "icon": "Github"
     },
     {
       "name": "instagram",
       "url": "https://instagram.com/pihkaal",
-      "icon": {
-        "char": " ",
-        "color": "#e1306c"
-      }
+      "icon": "Instagram"
     }
   ]
 }
