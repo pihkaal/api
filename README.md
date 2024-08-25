@@ -2,27 +2,6 @@
 
 Looking for a good idea for this readme... 🤔
 
-## 🤲 Donate
-
-```
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA512
-
-If you want to make a donation, see:
-
-XMR: 48CPqGnEm3rVMD2tCawUR7HGhpA427riGiC2n7K9YFPebiW2fctKUuR1n2shJz3e16PHoEF9TBBi5W5G4BBunLX52s4kYeG
-BTC: bc1qw0f46qkgpj43lulzks4appwuew9xcxmrd3cnvel99rlun9eyytdqfgq47w
-
-Thanks!
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSJ4Trr46NpA2VoOXV7DI2az7VCjAUCZa24IAAKCRB7DI2az7VC
-jLeFAPwOpZrk6omPX/01Cms+O/KQ+/kAB5xBuNDoNFi0Kg1NwwEA+hp4YOWUSb9v
-TXUiM4C1Hgu3r/Ndo8Tm0Dev6idwcws=
-=tJvO
------END PGP SIGNATURE-----
-```
-
 ## 🔐 PGP
 
 ```
@@ -40,4 +19,3 @@ l/tjvfMBAKp2qSjM23sEZeBfczpurdo7eLmwsQkgHiZBLyQifAsB
 =Dme4
 -----END PGP PUBLIC KEY BLOCK-----
 ```
-
