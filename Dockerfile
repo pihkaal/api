@@ -4,6 +4,8 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+RUN pnpm add -g @nestjs/cli
+
 COPY . /app
 WORKDIR /app
 
