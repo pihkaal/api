@@ -4,6 +4,8 @@ import { AppService } from "./app.service";
 import { EnvModule } from "./env/env.module";
 import { ConfigModule } from "@nestjs/config";
 import { envSchema } from "./env";
+import { HttpModule } from "@nestjs/axios";
+import { CacheModule } from "@nestjs/cache-manager";
 
 @Module({
   imports: [
@@ -11,6 +13,8 @@ import { envSchema } from "./env";
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
+    CacheModule.register(),
+    HttpModule,
     EnvModule,
   ],
   controllers: [AppController],
