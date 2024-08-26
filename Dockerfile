@@ -5,6 +5,10 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
 RUN pnpm add -g @nestjs/cli
+RUN apt-get update && apt-get install -y \
+    fontconfig \
+    fonts-noto \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY . /app
 WORKDIR /app
