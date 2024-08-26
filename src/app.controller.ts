@@ -10,7 +10,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly httpService: HttpService,
-  ) {}
+  ) { }
 
   @Get("currently-playing")
   @CacheKey("currently_playing")
@@ -145,10 +145,6 @@ export class AppController {
           <text x="75" y="32" fill="#ffffff">${htmlEncode(title)}</text> 
           <text x="75" y="54" fill="#090aoc">${htmlEncode(artists)}</text>
         </g>
-      </svg>`
-      .replace(/\n|\r/g, "")
-      .replace(/\s{2,}/g, " ")
-      .replace(/>\s+</g, "><")
-      .trim();
+      </svg>`;
   }
 }
