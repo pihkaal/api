@@ -48,13 +48,13 @@ export class AppController {
     const artists = playing.artists.map((x) => x.name).join(" / ");
 
     const titleWidth = ctx.measureText(title).width;
-    const barsX = 15 + 45 + 15 + titleWidth + 20;
+    const barsX = 15 + 45 + 15 + titleWidth + 15;
 
     const maxWidth = Math.min(
       240,
-      Math.max(titleWidth + 20 + 20, ctx.measureText(artists).width),
+      Math.max(titleWidth + 15 + 20, ctx.measureText(artists).width),
     );
-    const width = 15 + 45 + 15 + maxWidth + 12;
+    const width = 15 + 45 + 15 + maxWidth + 15;
 
     return `
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} 75" width="${width}" height="75">
