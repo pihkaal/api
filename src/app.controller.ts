@@ -52,8 +52,8 @@ export class AppController {
         <image href="data:${mimeType};base64,${base64Image}" x="15" y="15" width="45" height="45" clip-path="url(#clip)"/>
  
         <g font-size="15" font-family="system-ui" font-weight="bold">
-          <text x="75" y="54" fill="#090aoc">${htmlEncode(playing.name)}</text>
-          <text x="75" y="32" fill="#ffffff">${htmlEncode(playing.artists.map((x) => x.name).join(", "))}</text> 
+          <text x="75" y="32" fill="#ffffff">${htmlEncode(playing.name)}</text> 
+          <text x="75" y="54" fill="#090aoc">${htmlEncode(playing.artists.map((x) => x.name).join(" / "))}</text>
         </g>
       </svg>`;
 
