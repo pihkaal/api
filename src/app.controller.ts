@@ -52,12 +52,9 @@ export class AppController {
 
     const maxWidth = Math.min(
       240,
-      Math.max(
-        15 + 45 + 15 + titleWidth + 20 + 20,
-        ctx.measureText(artists).width,
-      ),
+      Math.max(titleWidth + 20 + 20, ctx.measureText(artists).width),
     );
-    const width = 15 + 45 + 15 + maxWidth + 20;
+    const width = 15 + 45 + 15 + maxWidth + 12;
 
     return `
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} 75" width="${width}" height="75">
@@ -67,52 +64,52 @@ export class AppController {
           <rect
             x="0"
             y="0"
-            width="5"
+            width="4"
             height="3"
             fill="#ffffff"
             opacity="1"
           >
             <animate
               attributeName="height"
-              values="3; 15; 3"
-              dur="900ms"
+              values="3; 12; 3"
+              dur="800ms"
               repeatCount="indefinite"
             />
             <animate
               attributeName="opacity"
               values="0.7; 1; 0.7"
-              dur="900ms"
+              dur="800ms"
               repeatCount="indefinite"
             />
           </rect>
           <rect
-            x="-7"
+            x="-6"
             y="0"
-            width="5"
+            width="4"
             height="3"
             fill="#ffffff"
             opacity="1"
           >
             <animate
               attributeName="height"
-              values="3; 15; 3"
-              dur="900ms"
+              values="3; 12; 3"
+              dur="800ms"
               begin="120ms"
               repeatCount="indefinite"
             />
             <animate
               attributeName="opacity"
               values="0.7; 1; 0.7"
-              dur="900ms"        
+              dur="800ms"        
               begin="120ms"
               repeatCount="indefinite"
             />
           </rect>
 
           <rect
-            x="-14"
+            x="-12"
             y="0"
-            width="5"
+            width="4"
             height="3"
             fill="#ffffff"
             opacity="1"
@@ -120,15 +117,15 @@ export class AppController {
             <animate
               delay="240ms"
               attributeName="height"
-              values="3; 15; 3"
-              dur="900ms"        
+              values="3; 12; 3"
+              dur="800ms"        
               begin="310ms"
               repeatCount="indefinite"
             />
             <animate
               attributeName="opacity"
               values="0.7; 1; 0.7"
-              dur="900ms"        
+              dur="800ms"        
               begin="310ms"
               repeatCount="indefinite"
             />
@@ -148,6 +145,10 @@ export class AppController {
           <text x="75" y="32" fill="#ffffff">${htmlEncode(title)}</text> 
           <text x="75" y="54" fill="#090aoc">${htmlEncode(artists)}</text>
         </g>
-      </svg>`.replaceAll(" ", "");
+      </svg>`
+      .replace(/\n|\r/g, "")
+      .replace(/\s{2,}/g, " ")
+      .replace(/>\s+</g, "><")
+      .trim();
   }
 }
