@@ -14,6 +14,10 @@ type VoltFmData = {
     duration_ms: number;
     preview_url: string;
   };
+  theme: {
+    id: string;
+    color_primary: string;
+  };
 };
 
 const CACHE_KEY = "voltfm_data";
@@ -25,9 +29,9 @@ export class AppService {
     private readonly envService: EnvService,
     private readonly httpService: HttpService,
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
-  ) { }
+  ) {}
 
-  private async getVoltFmData(): Promise<VoltFmData> {
+  async getVoltFmData(): Promise<VoltFmData> {
     const cached = await this.cacheManager.get<VoltFmData>(CACHE_KEY);
     if (cached) return cached;
 
@@ -45,10 +49,5 @@ export class AppService {
     await this.cacheManager.set(CACHE_KEY, data, CACHE_LIFETIME);
 
     return data;
-  }
-
-  async getCurrentlyPlaying(): Promise<VoltFmData["now_playing_track"]> {
-    const data = await this.getVoltFmData();
-    return data.now_playing_track;
   }
 }

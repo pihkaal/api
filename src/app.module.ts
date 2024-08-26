@@ -13,7 +13,9 @@ import { CacheModule } from "@nestjs/cache-manager";
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
-    CacheModule.register(),
+    CacheModule.register({
+      isGlobal: true,
+    }),
     HttpModule,
     EnvModule,
   ],
