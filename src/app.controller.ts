@@ -10,7 +10,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly httpService: HttpService,
-  ) { }
+  ) {}
 
   @Get("currently-playing")
   @CacheKey("currently_playing")
@@ -42,7 +42,7 @@ export class AppController {
     const canvas = createCanvas(1024, 50);
     const ctx = canvas.getContext("2d");
 
-    ctx.font = "15px system-ui";
+    ctx.font = "bold 15px system-ui";
 
     const title = playing.name;
     const artists = playing.artists.map((x) => x.name).join(" / ");
