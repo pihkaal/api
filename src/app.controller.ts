@@ -30,6 +30,14 @@ export class AppController {
     const base64Image = imageBuffer.toString("base64");
     const mimeType = imageResponse.headers["content-type"];
 
+    const htmlEncode = (str: string) =>
+      str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+
     const svgSrc = `
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 240 75" width="240" height="75">
         <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="${data.theme.color_primary}" />
@@ -44,8 +52,8 @@ export class AppController {
         <image href="data:${mimeType};base64,${base64Image}" x="15" y="15" width="45" height="45" clip-path="url(#clip)"/>
  
         <g font-size="15" font-family="system-ui" font-weight="bold">
-          <text x="75" y="54" fill="#090aoc">${playing.name}</text>
-          <text x="75" y="32" fill="#ffffff">${playing.artists.map((x) => x.name).join(", ")}</text> 
+          <text x="75" y="54" fill="#090aoc">${htmlEncode(playing.name)}</text>
+          <text x="75" y="32" fill="#ffffff">${htmlEncode(playing.artists.map((x) => x.name).join(", "))}</text> 
         </g>
       </svg>`;
 
