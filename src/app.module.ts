@@ -1,12 +1,13 @@
 import { Module } from "@nestjs/common";
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
 import { EnvModule } from "./env/env.module";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { envSchema } from "./env";
 import { HttpModule } from "@nestjs/axios";
 import { CacheModule } from "@nestjs/cache-manager";
 import * as redisStore from "cache-manager-redis-store";
+import { EnvService } from "./env/env.service";
+import { SpotifyModule } from "./spotify/spotify.module";
+import { ImageModule } from "./image/image.module";
 
 @Module({
   imports: [
@@ -15,19 +16,19 @@ import * as redisStore from "cache-manager-redis-store";
       isGlobal: true,
     }),
     CacheModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
+      imports: [EnvModule],
+      inject: [EnvService],
+      useFactory: (configService: EnvService) => ({
         store: redisStore,
         host: configService.get("REDIS_HOST"),
         port: configService.get("REDIS_PORT"),
-        isGlobal: true,
       }),
+      isGlobal: true,
     }),
     HttpModule,
     EnvModule,
+    SpotifyModule,
+    ImageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}

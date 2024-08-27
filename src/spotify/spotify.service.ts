@@ -1,9 +1,8 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { EnvService } from "./env/env.service";
-import { lastValueFrom } from "rxjs";
 import { HttpService } from "@nestjs/axios";
 import { Cache, CACHE_MANAGER } from "@nestjs/cache-manager";
-import * as sharp from "sharp";
+import { Inject, Injectable } from "@nestjs/common";
+import { lastValueFrom } from "rxjs";
+import { EnvService } from "~/env/env.service";
 
 type VoltFmData = {
   now_playing_track?: {
@@ -25,7 +24,7 @@ const CACHE_KEY = "voltfm_data";
 const CACHE_LIFETIME = 30;
 
 @Injectable()
-export class AppService {
+export class SpotifyService {
   constructor(
     private readonly envService: EnvService,
     private readonly httpService: HttpService,
@@ -48,39 +47,6 @@ export class AppService {
     const data = JSON.parse(rawData[1]) as VoltFmData;
 
     await this.cacheManager.set(CACHE_KEY, data, { ttl: CACHE_LIFETIME });
-
-    return data;
-  }
-
-  async fetchImage(
-    url: string,
-    resize?: { width: number; height: number },
-  ): Promise<string> {
-    let cacheKey = url;
-    if (resize) {
-      cacheKey += `@${resize.width}x${resize.height}`;
-    }
-
-    const cached = await this.cacheManager.get<string>(cacheKey);
-    if (cached) return cached;
-
-    const imageResponse = await lastValueFrom(
-      this.httpService.get(url, { responseType: "arraybuffer" }),
-    );
-    let imageBuffer = Buffer.from(imageResponse.data, "binary");
-
-    if (resize) {
-      imageBuffer = await sharp(imageBuffer)
-        .resize(resize.width, resize.height)
-        .toBuffer();
-    }
-
-    const base64Image = imageBuffer.toString("base64");
-    const mimeType = imageResponse.headers["content-type"];
-
-    const data = `data:${mimeType};base64,${base64Image}`;
-
-    await this.cacheManager.set(cacheKey, data);
 
     return data;
   }

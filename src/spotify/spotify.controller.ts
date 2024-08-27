@@ -1,24 +1,31 @@
 import { Controller, Get, Header } from "@nestjs/common";
-import { AppService } from "./app.service";
+import { SpotifyService } from "./spotify.service";
+import { ImageService } from "~/image/image.service";
 import { createCanvas } from "canvas";
 
 const IMAGE_SIZE = 128;
 
 @Controller()
-export class AppController {
-  constructor(private readonly appService: AppService) {}
+export class SpotifyController {
+  constructor(
+    private readonly spotifyService: SpotifyService,
+    private readonly imageService: ImageService,
+  ) {}
 
   @Get("currently-playing")
   @Header("Content-Type", "image/svg+xml")
   async getCurrentlyPlaying(): Promise<string> {
-    const data = await this.appService.getVoltFmData();
+    const data = await this.spotifyService.getVoltFmData();
     const playing = data.now_playing_track;
     if (!playing) return "not listening";
 
-    const image = await this.appService.fetchImage(playing.image_url_small, {
-      width: IMAGE_SIZE,
-      height: IMAGE_SIZE,
-    });
+    const image = await this.imageService.fetchBase64Image(
+      playing.image_url_small,
+      {
+        width: IMAGE_SIZE,
+        height: IMAGE_SIZE,
+      },
+    );
 
     const htmlEncode = (str: string) =>
       str
