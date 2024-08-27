@@ -40,7 +40,7 @@ export class AppController {
     const titleWidth = ctx.measureText(title).width;
     const barsX = 15 + 45 + 15 + titleWidth + 15;
 
-    const maxWidth = Math.min(
+    const maxWidth = Math.max(
       240,
       Math.max(titleWidth + 15 + 20, ctx.measureText(artists).width),
     );
