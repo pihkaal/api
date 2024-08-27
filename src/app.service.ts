@@ -56,7 +56,12 @@ export class AppService {
     url: string,
     resize?: { width: number; height: number },
   ): Promise<string> {
-    const cached = await this.cacheManager.get<string>(url);
+    let cacheKey = url;
+    if (resize) {
+      cacheKey += `@${resize.width}x${resize.height}`;
+    }
+
+    const cached = await this.cacheManager.get<string>(cacheKey);
     if (cached) return cached;
 
     const imageResponse = await lastValueFrom(
@@ -75,7 +80,7 @@ export class AppService {
 
     const data = `data:${mimeType};base64,${base64Image}`;
 
-    await this.cacheManager.set(url, data);
+    await this.cacheManager.set(cacheKey, data);
 
     return data;
   }
