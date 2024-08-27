@@ -5,4 +5,25 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: production
+    depends_on:
+      - redis
+    networks:
+      - app-network
     command: ["pnpm", "prod"]
+
+  redis:
+    image: "redis:7.2-alpine"
+    networks:
+      - app-network
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  redis:
+    driver: local
