@@ -1,34 +1,24 @@
 import { Controller, Get, Header } from "@nestjs/common";
 import { AppService } from "./app.service";
-import { lastValueFrom } from "rxjs";
-import { HttpService } from "@nestjs/axios";
-import { CacheKey, CacheTTL } from "@nestjs/cache-manager";
 import { createCanvas } from "canvas";
+
+const IMAGE_SIZE = 128;
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    private readonly httpService: HttpService,
-  ) {}
+  constructor(private readonly appService: AppService) {}
 
   @Get("currently-playing")
-  @CacheKey("currently_playing")
-  @CacheTTL(30)
   @Header("Content-Type", "image/svg+xml")
   async getCurrentlyPlaying(): Promise<string> {
     const data = await this.appService.getVoltFmData();
     const playing = data.now_playing_track;
     if (!playing) return "not listening";
 
-    const imageUrl = playing.image_url_small;
-    const imageResponse = await lastValueFrom(
-      this.httpService.get(imageUrl, { responseType: "arraybuffer" }),
-    );
-    const imageBuffer = Buffer.from(imageResponse.data, "binary");
-
-    const base64Image = imageBuffer.toString("base64");
-    const mimeType = imageResponse.headers["content-type"];
+    const image = await this.appService.fetchImage(playing.image_url_small, {
+      width: IMAGE_SIZE,
+      height: IMAGE_SIZE,
+    });
 
     const htmlEncode = (str: string) =>
       str
@@ -139,7 +129,7 @@ export class AppController {
           </clipPath>
         </defs>
 
-        <image href="data:${mimeType};base64,${base64Image}" x="15" y="15" width="45" height="45" clip-path="url(#clip)"/>
+        <image href="${image}" x="15" y="15" width="45" height="45" clip-path="url(#clip)"/>
  
         <g font-size="15" font-family="system-ui" font-weight="bold">
           <text x="75" y="32" fill="#ffffff">${htmlEncode(title)}</text> 
