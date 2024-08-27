@@ -41,10 +41,10 @@ export class AppController {
     const barsX = 15 + 45 + 15 + titleWidth + 15;
 
     const maxWidth = Math.max(
-      240,
-      Math.max(titleWidth + 15 + 20, ctx.measureText(artists).width),
+      titleWidth + 15 + 20,
+      ctx.measureText(artists).width,
     );
-    const width = 15 + 45 + 15 + maxWidth + 15;
+    const width = Math.max(250, 15 + 45 + 15 + maxWidth + 15);
 
     return `
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} 75" width="${width}" height="75">

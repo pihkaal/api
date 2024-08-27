@@ -22,7 +22,7 @@ type VoltFmData = {
 };
 
 const CACHE_KEY = "voltfm_data";
-const CACHE_LIFETIME = 30 * 1000;
+const CACHE_LIFETIME = 30;
 
 @Injectable()
 export class AppService {
@@ -47,7 +47,7 @@ export class AppService {
     );
     const data = JSON.parse(rawData[1]) as VoltFmData;
 
-    await this.cacheManager.set(CACHE_KEY, data, CACHE_LIFETIME);
+    await this.cacheManager.set(CACHE_KEY, data, { ttl: CACHE_LIFETIME });
 
     return data;
   }
