@@ -21,7 +21,7 @@ type CurrentlyPlaying = {
 };
 
 const CACHE_KEY = "currently_playing";
-const CACHE_LIFETIME = 30;
+const CACHE_LIFETIME = 5;
 
 @Injectable()
 export class SpotifyService {
