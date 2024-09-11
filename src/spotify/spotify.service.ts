@@ -4,23 +4,23 @@ import { Inject, Injectable } from "@nestjs/common";
 import { lastValueFrom } from "rxjs";
 import { EnvService } from "~/env/env.service";
 
-type VoltFmData = {
-  now_playing_track?: {
+type CurrentlyPlaying = {
+  item: {
     id: string;
     name: string;
-    image_url_large: string;
-    image_url_small: string;
     artists: Array<{ id: string; name: string }>;
     duration_ms: number;
     preview_url: string;
+    album: {
+      images: Array<{ url: string }>;
+    };
   };
-  theme: {
-    id: string;
-    color_primary: string;
-  };
+  preview_url: string;
+  progress_ms: number;
+  is_playing: boolean;
 };
 
-const CACHE_KEY = "voltfm_data";
+const CACHE_KEY = "currently_playing";
 const CACHE_LIFETIME = 30;
 
 @Injectable()
@@ -31,23 +31,51 @@ export class SpotifyService {
     @Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
   ) {}
 
-  async getVoltFmData(): Promise<VoltFmData> {
-    const cached = await this.cacheManager.get<VoltFmData>(CACHE_KEY);
-    if (cached) return cached;
-
-    const voltHtml = await lastValueFrom(
-      this.httpService.get<string>(
-        `https://volt.fm/${this.envService.get("VOLTFM_USERNAME")}`,
+  private async refreshAccessToken() {
+    const { data } = await lastValueFrom(
+      this.httpService.post(
+        "https://accounts.spotify.com/api/token",
+        new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: this.envService.get("SPOTIFY_REFRESH_TOKEN"),
+        }),
+        {
+          headers: {
+            Authorization: `Basic ${Buffer.from(`${this.envService.get("SPOTIFY_CLIENT_ID")}:${this.envService.get("SPOTIFY_CLIENT_SECRET")}`).toString("base64")}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
       ),
     );
 
-    const rawData = voltHtml.data.match(
-      /<script id="state" type="application\/json">([\s\S]*?)<\/script>/,
-    );
-    const data = JSON.parse(rawData[1]) as VoltFmData;
+    await this.cacheManager.set("spotify_access_token", data.access_token, {
+      ttl: data.expires_in,
+    });
+  }
 
-    await this.cacheManager.set(CACHE_KEY, data, { ttl: CACHE_LIFETIME });
+  async getCurrentlyPlaying(): Promise<CurrentlyPlaying> {
+    const cached = await this.cacheManager.get<CurrentlyPlaying>(CACHE_KEY);
+    if (cached) return cached;
 
-    return data;
+    try {
+      const { data } = await lastValueFrom(
+        this.httpService.get<CurrentlyPlaying>(
+          "https://api.spotify.com/v1/me/player/currently-playing",
+          {
+            headers: {
+              Authorization: `Bearer ${await this.cacheManager.get("spotify_access_token")}`,
+            },
+          },
+        ),
+      );
+
+      await this.cacheManager.set(CACHE_KEY, data, { ttl: CACHE_LIFETIME });
+
+      return data;
+    } catch {
+      await this.refreshAccessToken();
+
+      return this.getCurrentlyPlaying();
+    }
   }
 }

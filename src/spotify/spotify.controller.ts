@@ -1,7 +1,8 @@
-import { Controller, Get, Header } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Query, Res } from "@nestjs/common";
 import { SpotifyService } from "./spotify.service";
 import { ImageService } from "~/image/image.service";
 import { createCanvas } from "canvas";
+import { Response } from "express";
 
 const IMAGE_SIZE = 128;
 
@@ -13,49 +14,61 @@ export class SpotifyController {
   ) {}
 
   @Get("currently-playing")
-  @Header("Content-Type", "image/svg+xml")
-  async getCurrentlyPlaying(): Promise<string> {
-    const data = await this.spotifyService.getVoltFmData();
-    const playing = data.now_playing_track;
-    if (!playing) return "not listening";
+  async getCurrentlyPlaying(
+    @Query() query: { format: string },
+    @Res() res: Response,
+  ): Promise<string> {
+    const playing = await this.spotifyService.getCurrentlyPlaying();
+    if (!playing.is_playing || !playing.item) {
+      res.send(null);
+      return;
+    }
 
-    const image = await this.imageService.fetchBase64Image(
-      playing.image_url_small,
-      {
-        width: IMAGE_SIZE,
-        height: IMAGE_SIZE,
-      },
-    );
+    query.format ??= "json";
 
-    const htmlEncode = (str: string) =>
-      str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
+    if (query.format === "json") {
+      res.send(playing);
+      return;
+    } else if (query.format === "svg") {
+      const images = playing.item.album.images;
 
-    // mesure size
-    const canvas = createCanvas(1024, 50);
-    const ctx = canvas.getContext("2d");
+      const image = await this.imageService.fetchBase64Image(
+        images[images.length >= 2 ? images.length - 2 : images.length - 1].url,
+        {
+          width: IMAGE_SIZE,
+          height: IMAGE_SIZE,
+        },
+      );
 
-    ctx.font = "bold 15px system-ui";
+      const htmlEncode = (str: string) =>
+        str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
 
-    const title = playing.name;
-    const artists = playing.artists.map((x) => x.name).join(" / ");
+      // mesure size
+      const canvas = createCanvas(1024, 50);
+      const ctx = canvas.getContext("2d");
 
-    const titleWidth = ctx.measureText(title).width;
-    const barsX = 15 + 45 + 15 + titleWidth + 15;
+      ctx.font = "bold 15px system-ui";
 
-    const maxWidth = Math.max(
-      titleWidth + 15 + 20,
-      ctx.measureText(artists).width,
-    );
-    const width = Math.max(250, 15 + 45 + 15 + maxWidth + 15);
+      const title = playing.item.name;
+      const artists = playing.item.artists.map((x) => x.name).join(" / ");
 
-    return `
+      const titleWidth = ctx.measureText(title).width;
+      const barsX = 15 + 45 + 15 + titleWidth + 15;
+
+      const maxWidth = Math.max(
+        titleWidth + 15 + 20,
+        ctx.measureText(artists).width,
+      );
+      const width = Math.max(250, 15 + 45 + 15 + maxWidth + 15);
+
+      res.setHeader("Content-Type", "image/svg+xml").send(`
       <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 ${width} 75" width="${width}" height="75">
-        <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="${data.theme.color_primary}" />
+        <rect x="0" y="0" width="100%" height="100%" rx="12" ry="12" fill="#1ed760" />
   
         <g transform="translate(${barsX}, 32) rotate(180)">
           <rect
@@ -142,6 +155,10 @@ export class SpotifyController {
           <text x="75" y="32" fill="#ffffff">${htmlEncode(title)}</text> 
           <text x="75" y="54" fill="#090aoc">${htmlEncode(artists)}</text>
         </g>
-      </svg>`;
+      </svg>`);
+      return;
+    }
+
+    res.sendStatus(HttpStatus.BAD_REQUEST);
   }
 }
