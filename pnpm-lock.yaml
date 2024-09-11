@@ -34,6 +34,9 @@ importers:
       canvas:
         specifier: ^2.11.2
         version: 2.11.2
+      helmet:
+        specifier: ^7.1.0
+        version: 7.1.0
       reflect-metadata:
         specifier: ^0.2.0
         version: 0.2.2
@@ -2117,6 +2120,13 @@ packages:
         integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==,
       }
     engines: { node: ">= 0.4" }
+
+  helmet@7.1.0:
+    resolution:
+      {
+        integrity: sha512-g+HZqgfbpXdCkme/Cd/mZkV0aV3BZZZSugecH03kl38m/Kmdx8jKjBikpDj2cr+Iynv4KpYEviojNdTJActJAg==,
+      }
+    engines: { node: ">=16.0.0" }
 
   http-errors@2.0.0:
     resolution:
@@ -5053,6 +5063,8 @@ snapshots:
   hasown@2.0.2:
     dependencies:
       function-bind: 1.1.2
+
+  helmet@7.1.0: {}
 
   http-errors@2.0.0:
     dependencies:
