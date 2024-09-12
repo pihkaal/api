@@ -20,7 +20,7 @@ export class SpotifyController {
   ): Promise<void> {
     const playing = await this.spotifyService.getCurrentlyPlaying();
     if (!playing.is_playing || !playing.item) {
-      res.send(playing);
+      res.send({ is_playing: false });
       return;
     }
 
