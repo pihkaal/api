@@ -17,10 +17,10 @@ export class SpotifyController {
   async getCurrentlyPlaying(
     @Query() query: { format: string },
     @Res() res: Response,
-  ): Promise<string> {
+  ): Promise<void> {
     const playing = await this.spotifyService.getCurrentlyPlaying();
     if (!playing.is_playing || !playing.item) {
-      res.send(null);
+      res.send(playing);
       return;
     }
 
