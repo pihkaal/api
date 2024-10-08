@@ -1,16 +1,21 @@
 services:
-  app:
+  pihkaal-api:
     build: .
-    ports:
-      - "3000:3000"
     environment:
       NODE_ENV: production
     depends_on:
       - redis
     networks:
+      - web
       - app-network
     command: ["pnpm", "prod"]
-
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihkaal-api.rule=Host(`api.pihkaal.me`)"
+      - "traefik.http.routers.pihkaal-api.service=pihkaal-api"
+      - "traefik.http.services.pihkaal-api.loadbalancer.server.port=3000"
+      - "traefik.http.routers.pihkaal-api.tls=true"
+      - "traefik.http.routers.pihkaal-api.tls.certResolver=myresolver"
   redis:
     image: "redis:7.2-alpine"
     networks:
@@ -23,6 +28,8 @@ services:
 networks:
   app-network:
     driver: bridge
+  web:
+    external: true
 
 volumes:
   redis:
