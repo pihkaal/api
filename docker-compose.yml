@@ -2,7 +2,10 @@ services:
   pihkaal-api:
     build: .
     environment:
-      NODE_ENV: production
+      - NODE_ENV
+      - SPOTIFY_CLIENT_ID
+      - SPOTIFY_CLIENT_SECRET
+      - SPOTIFY_REFRESH_TOKEN
     depends_on:
       - redis
     networks:
@@ -16,6 +19,7 @@ services:
       - "traefik.http.services.pihkaal-api.loadbalancer.server.port=3000"
       - "traefik.http.routers.pihkaal-api.tls=true"
       - "traefik.http.routers.pihkaal-api.tls.certResolver=myresolver"
+
   redis:
     image: "redis:7.2-alpine"
     networks:
