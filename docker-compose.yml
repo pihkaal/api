@@ -13,6 +13,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=web"
       - "traefik.http.routers.pihkaal-api.rule=Host(`api.pihkaal.me`)"
       - "traefik.http.routers.pihkaal-api.service=pihkaal-api"
       - "traefik.http.services.pihkaal-api.loadbalancer.server.port=3000"
