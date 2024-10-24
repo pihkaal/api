@@ -1,6 +1,6 @@
 services:
   pihkaal-api:
-    build: .
+    image: pihkaal/api:latest
     environment:
       - NODE_ENV
       - SPOTIFY_CLIENT_ID
@@ -11,7 +11,6 @@ services:
     networks:
       - web
       - app-network
-    command: ["pnpm", "prod"]
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pihkaal-api.rule=Host(`api.pihkaal.me`)"
